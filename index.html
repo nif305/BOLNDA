@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>الخطة التشغيلية - الأكاديمية الأوروبية للأمن</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#016564',
+                        secondary: '#d0b284',
+                        'bg-light': '#f8f9f9',
+                        'accent-teal': '#498983',
+                        'accent-red': '#7c1e3e',
+                        'accent-brown': '#8c6968',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
+        :root { --primary: #016564; --secondary: #d0b284; }
+        html { scroll-behavior: smooth; }
+        body { background: linear-gradient(135deg, #f8f9f9 0%, #e8e9e6 100%); }
+        .sidebar-bg { background: linear-gradient(180deg, #016564 0%, #003837 100%); }
+        .card-shadow { box-shadow: 0 4px 20px rgba(1,101,100,0.08); }
+        .card-hover { transition: all 0.3s; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(1,101,100,0.15); }
+        .nav-item { position: relative; transition: all 0.3s; border-radius: 8px; }
+        .nav-item.active { color: #d0b284; background: rgba(208,178,132,0.2); }
+        .section-fade { opacity: 0; transform: translateY(30px); transition: all 0.6s; }
+        .section-fade.visible { opacity: 1; transform: translateY(0); }
+        .map-btn { background: linear-gradient(135deg, #016564, #498983); transition: all 0.3s; }
+        .map-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(1,101,100,0.3); }
+        .interactive-badge { position: absolute; top: 12px; left: 12px; background: linear-gradient(135deg, #016564, #498983); color: white; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; z-index: 10; }
+        .gold-badge { background: linear-gradient(135deg, #d0b284, #b89960); }
+        .hamburger span { display: block; width: 22px; height: 2px; background: #016564; margin: 5px 0; transition: 0.3s; border-radius: 1px; }
+        .menu-open .hamburger span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+        .menu-open .hamburger span:nth-child(2) { opacity: 0; }
+        .menu-open .hamburger span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+        .expandable { max-height: 0; overflow: hidden; transition: max-height 0.4s; }
+        .expandable.open { max-height: 1000px; }
+        .bus-animation { animation: busMove 2s ease-in-out infinite; }
+        @keyframes busMove { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
+        .bus-animation-return { animation: busMoveReturn 2s ease-in-out infinite; }
+        @keyframes busMoveReturn { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-5px); } }
+        .pulse-indicator { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #016564; border-radius: 3px; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Mobile Header -->
+    <header class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur card-shadow">
+        <div class="flex items-center justify-between px-4 py-3">
+            <button id="menuToggle" class="hamburger p-2" aria-label="القائمة"><span></span><span></span><span></span></button>
+            <img src="https://nauss.edu.sa/Style%20Library/ar-sa/Styles/images/home/Logo.svg" alt="NAUSS" class="w-10 h-10 object-contain">
+            <button onclick="openLocation('academy')" class="p-2" aria-label="الموقع">
+                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar-bg fixed top-0 right-0 h-full w-72 z-40 transform translate-x-full lg:translate-x-0 transition-transform overflow-y-auto">
+        <div class="p-5 flex flex-col min-h-full">
+            <div class="mb-6 pt-12 lg:pt-0">
+                <div class="flex items-center gap-3">
+                    <img src="https://nauss.edu.sa/Style%20Library/ar-sa/Styles/images/home/Logo.svg" alt="NAUSS" class="w-12 h-12 object-contain">
+                    <div><h1 class="text-white font-bold text-sm leading-tight">جامعة نايف العربية</h1><p class="text-white/60 text-xs">للعلوم الأمنية</p></div>
+                </div>
+            </div>
+            <nav class="flex-1">
+                <ul class="space-y-1">
+                    <li><a href="#intro" class="nav-item active block py-3 px-4 text-white/90 text-sm">مقدمة</a></li>
+                    <li><a href="#location" class="nav-item block py-3 px-4 text-white/70 text-sm">موقع التدريب</a></li>
+                    <li><a href="#cities" class="nav-item block py-3 px-4 text-white/70 text-sm">المدن القريبة</a></li>
+                    <li><a href="#accommodation" class="nav-item block py-3 px-4 text-white/70 text-sm">الإسكان والفنادق</a></li>
+                    <li><a href="#operational-model" class="nav-item block py-3 px-4 text-white/70 text-sm">نموذج الإقامة</a></li>
+                    <li><a href="#transportation" class="nav-item block py-3 px-4 text-white/70 text-sm">خطة النقل</a></li>
+                    <li><a href="#free-rooms" class="nav-item block py-3 px-4 text-white/70 text-sm">الغرف المجانية</a></li>
+                    <li><a href="#pre-visit" class="nav-item block py-3 px-4 text-white/70 text-sm">الزيارة الاستباقية</a></li>
+                    <li><a href="#risks" class="nav-item block py-3 px-4 text-white/70 text-sm">إدارة المخاطر</a></li>
+                    <li><a href="#governance" class="nav-item block py-3 px-4 text-white/70 text-sm">حوكمة العمليات</a></li>
+                </ul>
+            </nav>
+            <div class="pt-4 border-t border-white/10">
+                <button onclick="openLocation('academy')" class="w-full flex items-center justify-center gap-2 py-3 bg-white/10 rounded-xl text-white text-sm">عرض موقع الأكاديمية</button>
+            </div>
+        </div>
+    </aside>
+
+    <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden opacity-0 pointer-events-none transition-opacity"></div>
+
+    <!-- Main Content -->
+    <main class="lg:mr-72 pt-16 lg:pt-0">
+        <!-- Hero -->
+        <header class="bg-gradient-to-l from-primary to-accent-teal text-white">
+            <div class="max-w-5xl mx-auto px-4 py-10 lg:py-16">
+                <div class="section-fade">
+                    <div class="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-2 mb-6">
+                        <span class="w-2 h-2 rounded-full bg-secondary pulse-indicator"></span>
+                        <span class="text-sm">مقترح</span>
+                    </div>
+                    <h1 class="text-2xl lg:text-4xl font-bold mb-4">الخطة التنفيذية التشغيلية للبرامج التدريبية</h1>
+                    <p class="text-xl text-secondary font-medium mb-6">الأكاديمية الأوروبية للأمن - بولندا</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-5xl mx-auto px-4 py-6 lg:py-12 space-y-8">
+            
+            <!-- 1. مقدمة -->
+            <section id="intro" class="section-fade">
+                <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+                    <div class="p-6 border-b"><h2 class="text-xl font-bold text-primary">مقدمة</h2></div>
+                    <div class="p-6">
+                        <p class="text-gray-600 leading-relaxed mb-6">في إطار التوسع في تنفيذ البرامج التدريبية الدولية، وحرص جامعة نايف العربية للعلوم الأمنية على تقديم تجربة تدريبية متميزة تعكس مكانتها الأكاديمية والأمنية على المستوى الدولي، تم إعداد هذه الخطة التشغيلية لتنظيم الجوانب اللوجستية المرتبطة بتنفيذ البرامج التدريبية في الأكاديمية الأوروبية للأمن في جمهورية بولندا.</p>
+                        <p class="text-gray-600 leading-relaxed mb-6">وتهدف هذه الخطة إلى وضع تصور تشغيلي متكامل يضمن:</p>
+                        <div class="grid gap-3 sm:grid-cols-2">
+                            <div class="p-4 bg-bg-light rounded-xl text-gray-700">كفاءة إدارة العمليات اللوجستية</div>
+                            <div class="p-4 bg-bg-light rounded-xl text-gray-700">تحقيق التوازن بين الجودة والتكاليف</div>
+                            <div class="p-4 bg-bg-light rounded-xl text-gray-700">تقليل المخاطر التشغيلية</div>
+                            <div class="p-4 bg-bg-light rounded-xl text-gray-700">تعزيز جاهزية فرق العمل</div>
+                        </div>
+                        <div class="mt-6 p-4 bg-secondary/10 rounded-xl border-r-4 border-secondary">
+                            <p class="text-gray-600 text-sm">كما تعتمد الخطة على تنفيذ زيارة تشغيلية استباقية لموقع التدريب قبل بدء البرامج، بهدف التحقق من جاهزية الموقع وتحديد بنود السلفة التشغيلية.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. موقع مركز التدريب -->
+            <section id="location" class="section-fade">
+                <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+                    <div class="p-6 border-b"><h2 class="text-xl font-bold text-primary">أولاً: موقع مركز التدريب</h2></div>
+                    <div class="p-6">
+                        <p class="text-gray-600 leading-relaxed mb-6">يقع مركز التدريب في منطقة ريفية هادئة مخصصة للتدريب العملي.</p>
+                        <div class="grid gap-4 lg:grid-cols-2">
+                            <div class="relative card-hover bg-gradient-to-br from-primary to-accent-teal rounded-2xl p-6 text-white overflow-hidden">
+                                <span class="interactive-badge">تفاعلي</span>
+                                <div class="flex items-start gap-4 mb-4">
+                                    <div class="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center">
+                                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                    </div>
+                                    <div><p class="text-white/60 text-sm">اسم المركز</p><h3 class="text-xl font-bold">European Security Academy</h3></div>
+                                </div>
+                                <div class="mb-4">
+                                    <p class="font-medium">Włościejewki 9A, 63-130 Książ Wielkopolski, Poland</p>
+                                </div>
+                                <button onclick="openLocation('academy')" class="w-full py-3 bg-white/20 hover:bg-white/30 rounded-xl text-sm font-medium flex items-center justify-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                                    عرض الموقع على الخريطة
+                                </button>
+                            </div>
+                            <div class="bg-bg-light rounded-2xl p-6">
+                                <h3 class="font-bold text-gray-800 mb-3">ملاحظة تشغيلية</h3>
+                                <p class="text-gray-600 leading-relaxed mb-5">يبتعد عن المدن الرئيسية مسافة 20 دقيقة إلى ساعة بالسيارة.</p>
+                                <div class="p-4 bg-white rounded-xl">
+                                    <div class="flex justify-between text-xs mb-2"><span>مسافة الوصول</span><span class="text-primary font-medium">20 دقيقة - ساعة</span></div>
+                                    <div class="h-1.5 bg-gray-200 rounded overflow-hidden"><div class="h-full bg-primary rounded" style="width:45%"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. المدن القريبة -->
+            <section id="cities" class="section-fade">
+                <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+                    <div class="p-6 border-b"><h2 class="text-xl font-bold text-primary">ثانياً: المدن القريبة من الأكاديمية</h2></div>
+                    <div class="p-6">
+                        <p class="text-gray-600 leading-relaxed mb-6">تحليل المدن القريبة لتحديد الخيارات الأنسب:</p>
+                        <div class="space-y-4 mb-6">
+                            <div class="relative card-hover bg-primary/5 rounded-xl p-4 border border-primary/10">
+                                <span class="interactive-badge gold-badge">الأقرب</span>
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                                    <div><h4 class="font-bold text-primary text-lg">Śrem</h4><div class="text-sm text-gray-600 mt-1"><span>18 كم</span> - <span>20 دقيقة</span></div></div>
+                                    <button onclick="openLocation('srem')" class="map-btn py-2.5 px-6 rounded-lg text-white text-sm">عرض الخريطة</button>
+                                </div>
+                                <p class="text-gray-600 text-sm">أفضل خيار لوجستي.</p>
+                            </div>
+                            <div class="relative card-hover bg-bg-light rounded-xl p-4 border">
+                                <span class="interactive-badge">تفاعلي</span>
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                                    <div><h4 class="font-bold text-primary text-lg">Jarocin</h4><div class="text-sm text-gray-600 mt-1"><span>32 كم</span> - <span>30 دقيقة</span></div></div>
+                                    <button onclick="openLocation('jarocin')" class="map-btn py-2.5 px-6 rounded-lg text-white text-sm">عرض الخريطة</button>
+                                </div>
+                                <p class="text-gray-600 text-sm">خيار ثانوي.</p>
+                            </div>
+                            <div class="relative card-hover bg-bg-light rounded-xl p-4 border">
+                                <span class="interactive-badge">تفاعلي</span>
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                                    <div><h4 class="font-bold text-primary text-lg">Poznań</h4><div class="text-sm text-gray-600 mt-1"><span>63 كم</span> - <span>60 دقيقة</span></div></div>
+                                    <button onclick="openLocation('poznan')" class="map-btn py-2.5 px-6 rounded-lg text-white text-sm">عرض الخريطة</button>
+                                </div>
+                                <p class="text-gray-600 text-sm">للإقامة القصيرة.</p>
+                            </div>
+                        </div>
+                        <div class="bg-bg-light rounded-xl p-4">
+                            <h3 class="font-bold text-gray-800 mb-3">عوامل اتخاذ القرار</h3>
+                            <div class="grid gap-2 sm:grid-cols-3">
+                                <div class="text-sm text-gray-700">• راحة المتدربين</div>
+                                <div class="text-sm text-gray-700">• كفاءة التنقل</div>
+                                <div class="text-sm text-gray-700">• تكلفة التشغيل</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+                        <!-- 4. الإسكان والفنادق -->
+            <section id="accommodation" class="section-fade">
+                <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+                    <div class="p-6 border-b"><h2 class="text-xl font-bold text-primary">ثالثاً: الإسكان والفنادق المقترحة</h2></div>
+                    <div class="p-6">
+                        <p class="text-gray-600 leading-relaxed mb-6">يتحمل المشاركون تكاليف السكن، والإدارة تقترح الفنادق وتتفاوض لأسعار مخفضة.</p>
+                        <div class="grid gap-3 sm:grid-cols-2 mb-8">
+                            <div class="p-4 bg-bg-light rounded-xl text-sm text-gray-700">ضمان تمركز المشاركين</div>
+                            <div class="p-4 bg-bg-light rounded-xl text-sm text-gray-700">تسهيل تنظيم النقل</div>
+                            <div class="p-4 bg-bg-light rounded-xl text-sm text-gray-700">تقليل تشتت المشاركين</div>
+                            <div class="p-4 bg-bg-light rounded-xl text-sm text-gray-700">متابعة الإشراف</div>
+                        </div>
+                        <!-- فنادق بوزنان -->
+                        <div class="mb-8">
+                            <div class="flex items-center gap-3 mb-5"><span class="bg-secondary text-white text-xs font-bold px-3 py-1 rounded-full">1</span><h3 class="font-bold">فنادق بوزنان (260-400 ريال/ليلة)</h3></div>
+                            <div class="grid gap-3 sm:grid-cols-2">
+                                <div class="relative card-hover bg-bg-light rounded-xl p-4 border"><span class="interactive-badge">تفاعلي</span><h4 class="font-bold text-primary pr-12 mb-2">Park Inn by Radisson</h4><div class="text-sm text-gray-600 mb-3">90 – 100 يورو</div><button onclick="openLocation('parkinn')" class="map-btn w-full py-2.5 rounded-lg text-white text-sm">عرض الخريطة</button></div>
+                                <div class="relative card-hover bg-bg-light rounded-xl p-4 border"><span class="interactive-badge">تفاعلي</span><h4 class="font-bold text-primary pr-12 mb-2">Ibis Poznań Centrum</h4><div class="text-sm text-gray-600 mb-3">80 – 100 يورو</div><button onclick="openLocation('ibis')" class="map-btn w-full py-2.5 rounded-lg text-white text-sm">عرض الخريطة</button></div>
+                                <div class="relative card-hover bg-bg-light rounded-xl p-4 border"><span class="interactive-badge">تفاعلي</span><h4 class="font-bold text-primary pr-12 mb-2">B&B Hotel Old Town</h4><div class="text-sm text-gray-600 mb-3">70 – 90 يورو</div><button onclick="openLocation('bbhotel')" class="map-btn w-full py-2.5 rounded-lg text-white text-sm">عرض الخريطة</button></div>
+                                <div class="relative card-hover bg-bg-light rounded-xl p-4 border"><span class="interactive-badge">تفاعلي</span><h4 class="font-bold text-primary pr-12 mb-2">Campanile Poznań</h4><div class="text-sm text-gray-600 mb-3">70 – 85 يورو</div><button onclick="openLocation('campanile')" class="map-btn w-full py-2.5 rounded-lg text-white text-sm">عرض الخريطة</button></div>
+                            </div>
+                        </div>
+                        <!-- فنادق Śrem -->
+                        <div>
+                            <div class="flex items-center gap-3 mb-5"><span class="bg-secondary text-white text-xs font-bold px-3 py-1 rounded-full">2</span><h3 class="font-bold">فنادق Śrem</h3></div>
+                            <div class="grid gap-3 sm:grid-cols-2">
+                                <div class="relative card-hover bg-primary/5 rounded-xl p-4 border border-primary/10"><span class="interactive-badge gold-badge">الأقرب</span><h4 class="font-bold text-primary pr-12 mb-2">Hotel Cztery Korony</h4><div class="text-sm text-gray-600 mb-3">60 – 80 يورو</div><button onclick="openLocation('cztery')" class="map-btn w-full py-2.5 rounded-lg text-white text-sm">عرض الخريطة</button></div>
+                                <div class="relative card-hover bg-bg-light rounded-xl p-4 border"><span class="interactive-badge">تفاعلي</span><h4 class="font-bold text-primary pr-12 mb-2">Cztery Korony (فندق ومطعم)</h4><div class="text-sm text-gray-600 mb-3">70 – 90 يورو</div><button onclick="openLocation('czteryresto')" class="map-btn w-full py-2.5 rounded-lg text-white text-sm">عرض الخريطة</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. نموذج الإقامة -->
+            <section id="operational-model" class="section-fade">
+                <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+                    <div class="p-6 border-b"><h2 class="text-xl font-bold text-primary">رابعاً: نموذج الإقامة التشغيلي</h2></div>
+                    <div class="p-6">
+                        <p class="text-gray-600 leading-relaxed mb-6">بناءً على التحليل، يقترح اعتماد النموذج التالي:</p>
+                        <div class="space-y-4">
+                            <div class="card-hover bg-gradient-to-br from-primary to-accent-teal rounded-2xl p-6 text-white">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                                    <div><h3 class="text-lg font-bold mb-2">البرامج قصيرة المدة (أقل من أسبوعين)</h3><p class="text-white/80 text-sm mb-3">الإقامة في الفنادق مع نقل يومي.</p><div class="flex flex-wrap gap-2"><button onclick="openLocation('poznan')" class="bg-white/20 px-3 py-1 rounded-full text-sm">بوزنان</button><button onclick="openLocation('srem')" class="bg-white/20 px-3 py-1 rounded-full text-sm">Śrem</button></div></div>
+                                </div>
+                            </div>
+                            <div class="card-hover bg-bg-light rounded-2xl p-6 border">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-secondary/20 flex items-center justify-center"><svg class="w-6 h-6 text-accent-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+                                    <div class="flex-1"><h3 class="text-lg font-bold text-gray-800 mb-2">البرامج طويلة المدة (أكثر من أسبوعين)</h3><p class="text-gray-600 text-sm mb-3">الإقامة داخل الأكاديمية:</p><div class="grid gap-2 sm:grid-cols-2"><div class="text-sm text-gray-600">• تقليل التنقل</div><div class="text-sm text-gray-600">• تقليل الإرهاق</div><div class="text-sm text-gray-600">• تعزيز الانضباط</div><div class="text-sm text-gray-600">• استثمار الوقت</div></div></div>
+                                </div>
+                            </div>
+                            <div class="card-hover bg-secondary/10 rounded-2xl p-6 border-r-4 border-secondary">
+                                <div class="flex items-start gap-4"><div class="w-12 h-12 rounded-xl bg-secondary/20 flex items-center justify-center"><svg class="w-6 h-6 text-accent-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg></div><div><h3 class="text-lg font-bold text-gray-800 mb-2">عطلة نهاية الأسبوع</h3><p class="text-gray-600 text-sm">خيار الإقامة في بوزنان للخدمات السياحية.</p></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. خطة النقل -->
+            <section id="transportation" class="section-fade">
+                <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+                    <div class="p-6 border-b"><h2 class="text-xl font-bold text-primary">خامساً: خطة النقل الترددي</h2></div>
+                    <div class="p-6">
+                        <p class="text-gray-600 leading-relaxed mb-6">التعاقد مع شركة نقل لتنظيم النقل اليومي:</p>
+                        
+                        <!-- Timeline -->
+                        <div class="relative bg-gray-50 rounded-2xl p-6 mb-6 border overflow-hidden">
+                            <div class="flex items-center justify-between mb-8">
+                                <div><h3 class="font-bold text-gray-800">مسار الرحلة اليومية</h3></div>
+                                <div class="flex items-center gap-2 bg-primary/10 px-3 py-1 rounded-full"><span class="w-2 h-2 rounded-full bg-primary pulse-indicator"></span><span class="text-xs text-primary font-medium">يومي</span></div>
+                            </div>
+                            <!-- Desktop -->
+                            <div class="hidden sm:block">
+                                <div class="absolute top-16 left-0 right-0 h-1 bg-gradient-to-l from-primary via-secondary to-accent-brown rounded-full"></div>
+                                <div class="flex justify-between relative">
+                                    <div class="flex flex-col items-center w-1/4"><div class="w-20 h-20 rounded-2xl bg-white shadow border-2 border-primary flex items-center justify-center mb-3 z-10"><svg class="w-9 h-9 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg></div><div class="bg-primary text-white px-4 py-2 rounded-xl mb-2">07:30</div><h4 class="font-bold text-sm">الفندق</h4></div>
+                                    <div class="flex flex-col items-center justify-center w-1/4 pt-4"><div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-2"><svg class="w-8 h-8 text-primary bus-animation" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 17l4 4m0 0l4-4m-4 4V3"/><circle cx="12" cy="12" r="10"/></svg></div><div class="bg-secondary/20 text-secondary px-3 py-1 rounded-full text-xs">45 دقيقة</div></div>
+                                    <div class="flex flex-col items-center w-1/4"><div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-accent-teal shadow flex items-center justify-center mb-3 z-10"><svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5z"/></svg></div><div class="bg-accent-teal text-white px-4 py-2 rounded-xl mb-2">08:30</div><h4 class="font-bold text-sm">الأكاديمية</h4><div class="mt-2 bg-primary/10 text-primary text-xs px-3 py-1 rounded-full">8.5 ساعات</div></div>
+                                    <div class="flex flex-col items-center justify-center w-1/4 pt-4"><div class="w-14 h-14 rounded-xl bg-accent-brown/10 flex items-center justify-center mb-2"><svg class="w-8 h-8 text-accent-brown bus-animation-return" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 17l-4 4m0 0l-4-4m4 4V3"/><circle cx="12" cy="12" r="10"/></svg></div><div class="bg-secondary/20 text-secondary px-3 py-1 rounded-full text-xs">45 دقيقة</div></div>
+                                </div>
+                                <div class="flex justify-start mt-6" style="width:25%"><div class="flex flex-col items-center"><div class="w-20 h-20 rounded-2xl bg-white shadow border-2 border-accent-brown flex items-center justify-center mb-3 z-10"><svg class="w-9 h-9 text-accent-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3"/></svg></div><div class="bg-accent-brown text-white px-4 py-2 rounded-xl mb-2">18:00</div><h4 class="font-bold text-sm">الفندق</h4></div></div>
+                            </div>
+                            <!-- Mobile -->
+                            <div class="sm:hidden space-y-3">
+                                <div class="flex items-center gap-4 bg-white rounded-xl p-4 border-r-4 border-primary"><div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center"><svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg></div><div><span class="bg-primary text-white text-sm px-2 py-0.5 rounded">07:30</span><p class="font-bold text-gray-800 mt-1">الفندق</p></div></div>
+                                <div class="flex justify-center gap-2"><svg class="w-5 h-5 text-primary bus-animation" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg><span class="text-sm text-gray-500">45 دقيقة</span></div>
+                                <div class="flex items-center gap-4 bg-primary/5 rounded-xl p-4 border-r-4 border-accent-teal"><div class="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-accent-teal flex items-center justify-center"><svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5z"/></svg></div><div><span class="bg-accent-teal text-white text-sm px-2 py-0.5 rounded">08:30</span><p class="font-bold text-gray-800 mt-1">الأكاديمية</p><div class="mt-1 bg-primary/10 text-primary text-xs px-2 py-0.5 rounded-full inline-block">8.5 ساعات</div></div></div>
+                                <div class="flex justify-center gap-2"><svg class="w-5 h-5 text-accent-brown bus-animation-return" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg><span class="text-sm text-gray-500">45 دقيقة</span></div>
+                                <div class="flex items-center gap-4 bg-white rounded-xl p-4 border-r-4 border-accent-brown"><div class="w-14 h-14 rounded-xl bg-accent-brown/10 flex items-center justify-center"><svg class="w-7 h-7 text-accent-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3"/></svg></div><div><span class="bg-accent-brown text-white text-sm px-2 py-0.5 rounded">18:00</span><p class="font-bold text-gray-800 mt-1">الفندق</p></div></div>
+                            </div>
+                        </div>
+                        <div class="bg-bg-light rounded-xl p-6">
+                            <h4 class="font-bold text-gray-800 mb-4">جدول الأوقات</h4>
+                            <div class="grid gap-3">
+                                <div class="flex items-center gap-4 bg-white rounded-xl p-4 border-r-4 border-primary"><div class="w-20 text-center"><span class="text-2xl font-bold text-primary">07:30</span></div><div><p class="font-semibold">مغادرة الفندق</p></div></div>
+                                <div class="flex items-center gap-4 bg-white rounded-xl p-4 border-r-4 border-accent-teal"><div class="w-20 text-center"><span class="text-2xl font-bold text-accent-teal">08:30</span></div><div><p class="font-semibold">الوصول للأكاديمية</p></div></div>
+                                <div class="flex items-center gap-4 bg-white rounded-xl p-4 border-r-4 border-secondary"><div class="w-20 text-center"><span class="text-2xl font-bold text-secondary">17:00</span></div><div><p class="font-semibold">مغادرة الأكاديمية</p></div></div>
+                                <div class="flex items-center gap-4 bg-white rounded-xl p-4 border-r-4 border-accent-brown"><div class="w-20 text-center"><span class="text-2xl font-bold text-accent-brown">18:00</span></div><div><p class="font-semibold">الوصول للفندق</p></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+                        <!-- 7. الغرف المجانية -->
+            <section id="free-rooms" class="section-fade">
+                <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+                    <div class="p-6 border-b"><h2 class="text-xl font-bold text-primary">سادساً: الغرف المجانية</h2></div>
+                    <div class="p-6">
+                        <p class="text-gray-600 leading-relaxed mb-6">التفاوض للحصول على غرفتين مجانيتين:</p>
+                        <div class="grid gap-4 sm:grid-cols-2 mb-6">
+                            <div class="card-hover bg-primary/10 rounded-xl p-6 text-center"><div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3"><svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></div><h3 class="font-bold text-primary">منسق البرنامج</h3><span class="text-4xl font-bold text-primary">1</span></div>
+                            <div class="card-hover bg-secondary/10 rounded-xl p-6 text-center"><div class="w-16 h-16 rounded-2xl bg-secondary/20 flex items-center justify-center mx-auto mb-3"><svg class="w-8 h-8 text-accent-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10"/></svg></div><h3 class="font-bold text-accent-brown">المترجم</h3><span class="text-4xl font-bold text-accent-brown">1</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. الزيارة الاستباقية -->
+            <section id="pre-visit" class="section-fade">
+                <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+                    <div class="p-6 border-b"><h2 class="text-xl font-bold text-primary">سابعاً: الزيارة الاستباقية</h2></div>
+                    <div class="p-6">
+                        <p class="text-gray-600 leading-relaxed mb-6">زيارة استباقية تهدف إلى:</p>
+                        <div class="grid gap-3 sm:grid-cols-2">
+                            <div class="flex items-start gap-3 p-4 bg-bg-light rounded-xl"><div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0"><span class="text-white text-sm font-bold">1</span></div><p class="text-gray-700 text-sm">التقييم الفعلي لمرافق الأكاديمية</p></div>
+                            <div class="flex items-start gap-3 p-4 bg-bg-light rounded-xl"><div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0"><span class="text-white text-sm font-bold">2</span></div><p class="text-gray-700 text-sm">تقييم جودة الضيافة والوجبات</p></div>
+                            <div class="flex items-start gap-3 p-4 bg-bg-light rounded-xl"><div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0"><span class="text-white text-sm font-bold">3</span></div><p class="text-gray-700 text-sm">زيارة الفنادق المقترحة</p></div>
+                            <div class="flex items-start gap-3 p-4 bg-bg-light rounded-xl"><div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0"><span class="text-white text-sm font-bold">4</span></div><p class="text-gray-700 text-sm">البحث عن بدائل إعاشة خارجية</p></div>
+                            <div class="flex items-start gap-3 p-4 bg-bg-light rounded-xl"><div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0"><span class="text-white text-sm font-bold">5</span></div><p class="text-gray-700 text-sm">تجربة مسارات النقل</p></div>
+                            <div class="flex items-start gap-3 p-4 bg-bg-light rounded-xl"><div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0"><span class="text-white text-sm font-bold">6</span></div><p class="text-gray-700 text-sm">تحديد أقرب مستشفى</p></div>
+                            <div class="flex items-start gap-3 p-4 bg-secondary/10 rounded-xl sm:col-span-2 border-r-4 border-secondary"><div class="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0"><span class="text-white text-sm font-bold">7</span></div><p class="text-gray-700 text-sm font-medium">تحديد بنود السلفة التشغيلية</p></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 9. إدارة المخاطر -->
+            <section id="risks" class="section-fade">
+                <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+                    <div class="p-6 border-b"><h2 class="text-xl font-bold text-accent-red">ثامناً: إدارة المخاطر</h2></div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <div class="card-hover bg-bg-light rounded-xl overflow-hidden"><button class="w-full flex items-center justify-between p-5 text-right" onclick="toggleExpand(this)"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-xl bg-accent-red/10 flex items-center justify-center"><svg class="w-5 h-5 text-accent-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div><span class="font-semibold">الإرهاق من النقل اليومي</span></div><svg class="w-5 h-5 text-gray-400 expand-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="expandable"><div class="px-5 pb-5"><div class="p-4 bg-white rounded-lg border-r-4 border-primary"><p class="text-primary font-medium mb-1">المعالجة:</p><p class="text-gray-700">السكن داخل الأكاديمية للبرامج الطويلة.</p></div></div></div></div>
+                            <div class="card-hover bg-bg-light rounded-xl overflow-hidden"><button class="w-full flex items-center justify-between p-5 text-right" onclick="toggleExpand(this)"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-xl bg-secondary/20 flex items-center justify-center"><svg class="w-5 h-5 text-accent-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></div><span class="font-semibold">ضعف مستوى الضيافة</span></div><svg class="w-5 h-5 text-gray-400 expand-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="expandable"><div class="px-5 pb-5"><div class="p-4 bg-white rounded-lg border-r-4 border-primary"><p class="text-primary font-medium mb-1">المعالجة:</p><p class="text-gray-700">التعاقد مع خدمات تموين خارجية.</p></div></div></div></div>
+                            <div class="card-hover bg-bg-light rounded-xl overflow-hidden"><button class="w-full flex items-center justify-between p-5 text-right" onclick="toggleExpand(this)"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg></div><span class="font-semibold">تعطل وسائل النقل</span></div><svg class="w-5 h-5 text-gray-400 expand-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="expandable"><div class="px-5 pb-5"><div class="p-4 bg-white rounded-lg border-r-4 border-primary"><p class="text-primary font-medium mb-1">المعالجة:</p><p class="text-gray-700">التعاقد مع شركة نقل احتياطية.</p></div></div></div></div>
+                            <div class="card-hover bg-bg-light rounded-xl overflow-hidden"><button class="w-full flex items-center justify-between p-5 text-right" onclick="toggleExpand(this)"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-xl bg-accent-red/10 flex items-center justify-center"><svg class="w-5 h-5 text-accent-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg></div><span class="font-semibold">الإصابات الطبية</span></div><svg class="w-5 h-5 text-gray-400 expand-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="expandable"><div class="px-5 pb-5"><div class="p-4 bg-white rounded-lg border-r-4 border-primary"><p class="text-primary font-medium mb-1">المعالجة:</p><p class="text-gray-700">تحديد أقرب مستشفى والتأكد من التأمين.</p></div></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 10. حوكمة العمليات -->
+            <section id="governance" class="section-fade">
+                <div class="bg-gradient-to-br from-primary to-accent-teal rounded-2xl card-shadow text-white overflow-hidden">
+                    <div class="p-8">
+                        <div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div><h2 class="text-xl font-bold">تاسعاً: حوكمة العمليات</h2></div>
+                        <div class="bg-white/10 rounded-xl p-6"><p class="text-white/90 leading-relaxed text-lg">تعتمد هذه الخطة على مبدأ كفاءة الإنفاق وإدارة الجهد اللوجستي بطريقة مؤسسية مستدامة.</p></div>
+                        <div class="mt-8 pt-6 border-t border-white/20">
+                            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div class="flex items-center gap-3"><img src="https://nauss.edu.sa/Style%20Library/ar-sa/Styles/images/home/Logo.svg" alt="NAUSS" class="w-12 h-12 object-contain"><div><p class="text-white/60 text-sm">جامعة نايف العربية للعلوم الأمنية</p><p class="font-semibold">الخطة المقترحة 2026</p></div></div>
+                                <div class="text-center sm:text-left"><p class="text-white/60 text-sm">الأكاديمية الأوروبية للأمن</p><p class="font-semibold">بولندا</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+        
+        <!-- Footer -->
+        <footer class="bg-white border-t py-8 text-center">
+            <img src="https://nauss.edu.sa/Style%20Library/ar-sa/Styles/images/home/Logo.svg" alt="NAUSS" class="w-12 h-12 mx-auto mb-3">
+            <p class="text-gray-500 text-sm">جميع الحقوق محفوظة - وكالة التدريب بجامعة نايف العربية للعلوم الأمنية 2026</p>
+        </footer>
+    </main>
+
+    <script>
+        var locations = {
+            academy: { url: 'https://maps.app.goo.gl/3KE5ReLuCpTzqnJd8' },
+            srem: { url: 'https://maps.app.goo.gl/8xnmrnZFq6rJ2ooH6' },
+            jarocin: { url: 'https://maps.app.goo.gl/u4Lc987mejH9N64B9' },
+            poznan: { url: 'https://maps.app.goo.gl/zn5tbT9hEd3ESNo58' },
+            parkinn: { url: 'https://maps.app.goo.gl/87C2sPk7tVAQab7JA' },
+            ibis: { url: 'https://maps.app.goo.gl/Jt99F3VHZUTRn1wv6' },
+            bbhotel: { url: 'https://maps.app.goo.gl/MKBJrFWS6XUgd8MPA' },
+            campanile: { url: 'https://maps.app.goo.gl/BJmsUi5aboxqxW238' },
+            cztery: { url: 'https://maps.app.goo.gl/2TfM5SyrF7xkbnTP6' },
+            czteryresto: { url: 'https://maps.app.goo.gl/wvLKoR3pCaPbjnyR7' }
+        };
+
+        function openLocation(key) { if(locations[key]) window.open(locations[key].url, '_blank'); }
+
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('overlay');
+        var menuToggle = document.getElementById('menuToggle');
+
+        function toggleMenu() {
+            var isOpen = sidebar.classList.contains('translate-x-0');
+            sidebar.classList.toggle('translate-x-0', !isOpen);
+            sidebar.classList.toggle('translate-x-full', isOpen);
+            overlay.classList.toggle('opacity-100', !isOpen);
+            overlay.classList.toggle('pointer-events-auto', !isOpen);
+            overlay.classList.toggle('opacity-0', isOpen);
+            overlay.classList.toggle('pointer-events-none', isOpen);
+            menuToggle.classList.toggle('menu-open', !isOpen);
+        }
+
+        menuToggle.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+
+        document.querySelectorAll('.nav-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                this.classList.add('active');
+                if(window.innerWidth < 1024) toggleMenu();
+            });
+        });
+
+        function toggleExpand(btn) {
+            var content = btn.nextElementSibling;
+            var icon = btn.querySelector('.expand-icon');
+            if(content) content.classList.toggle('open');
+            if(icon) icon.classList.toggle('rotate-180');
+        }
+
+        var sections = document.querySelectorAll('.section-fade');
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        sections.forEach(s => observer.observe(s));
+
+        setTimeout(() => sections.forEach(s => { if(s.getBoundingClientRect().top < window.innerHeight) s.classList.add('visible'); }), 100);
+
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', function(e) {
+                e.preventDefault();
+                var target = document.querySelector(this.getAttribute('href'));
+                if(target) window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+            });
+        });
+
+        document.addEventListener('keydown', e => { if(e.key === 'Escape' && sidebar.classList.contains('translate-x-0')) toggleMenu(); });
+    </script>
+</body>
+</html>
